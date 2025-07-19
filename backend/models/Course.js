@@ -5,22 +5,20 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
     description: {
         type: String,
-        requred: true
+        required: true  
     },
-
     instructor: {
-        type : mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-
     lessons: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Lesson'
     }]
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.Schema('Course', courseSchema);
+
+module.exports = mongoose.model('Course', courseSchema);
