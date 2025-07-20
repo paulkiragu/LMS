@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes')
+const progressRoutes = require('./routes/progressRoutes')
 
 
 
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/course', courseRoutes)
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/enrollments', enrollmentRoutes)
+app.use('/api/progress', progressRoutes)
 
 
 
