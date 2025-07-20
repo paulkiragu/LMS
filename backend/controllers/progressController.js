@@ -2,7 +2,7 @@ const Progress = require('../models/Progress');
 const Course = require('../models/Course');
 const Lesson = require('../models/Lesson');
 
-// @desc: Mark a lesson as completed
+//  Mark a lesson as completed
 exports.markLessonComplete = async (req, res) => {
   try {
     const { courseId, lessonId } = req.body;
@@ -47,7 +47,7 @@ exports.markLessonComplete = async (req, res) => {
   }
 };
 
-// @desc: Get progress for logged-in user on a course
+//  Get progress for logged-in user on a course
 exports.getMyProgress = async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -74,7 +74,7 @@ exports.getMyProgress = async (req, res) => {
   }
 };
 
-// @desc: Admin - Get user progress in a course
+//  Admin - Get user progress in a course
 exports.getUserProgress = async (req, res) => {
   try {
     const { userId, courseId } = req.params;
