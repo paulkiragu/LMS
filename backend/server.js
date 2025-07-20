@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
+const enrollmentRoutes = require('./routes/enrollmentRoutes')
 
 
 
@@ -17,6 +18,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/course', courseRoutes)
 app.use('/api/lessons', lessonRoutes);
+app.use('/api/enrollments', enrollmentRoutes)
 
 
 
