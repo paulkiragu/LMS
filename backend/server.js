@@ -5,8 +5,10 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
-const enrollmentRoutes = require('./routes/enrollmentRoutes')
-const progressRoutes = require('./routes/progressRoutes')
+const enrollmentRoutes = require('./routes/enrollmentRoutes');
+const progressRoutes = require('./routes/progressRoutes');
+const adminStatsRoutes = require('./routes/adminStatRoutes');
+
 
 
 
@@ -14,13 +16,18 @@ dotenv.config();
 
 const app = express();
 app.use(express.json())
-app.use(cors());
+const allowedOrigins = ['http://localhost:8080'];
+
+app.use(cors({
+  origin:"*"
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/course', courseRoutes)
 app.use('/api/lessons', lessonRoutes);
-app.use('/api/enrollments', enrollmentRoutes)
-app.use('/api/progress', progressRoutes)
+app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/admin/stats', adminStatsRoutes);
 
 
 

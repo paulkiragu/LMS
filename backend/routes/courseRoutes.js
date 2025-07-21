@@ -10,7 +10,7 @@ const {
 const { protect, authorizeRoles } = require("../middlewares/authMiddlewares");
 
 // PUBLIC  READ ROUTES
-router.get("/", getCourses);
+router.get("/me", getCourses);
 router.get("/:id", getCourseById);
 
 // PROTECTED WRITE ROUTES
