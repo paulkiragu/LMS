@@ -57,5 +57,13 @@ pnpm install
 pnpm dev
 
 
+### screenshots
+![dashboard](./backend/screenshots/dashboard.png)
+![dashboard](./backend/screenshots/lms%201.png)
+![dashboard](./backend/screenshots/lms_login.png)
+
+
+
+
 
 
