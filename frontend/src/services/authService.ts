@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-// Use the same API base URL as in your AuthContext
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
+// Use the same API base URL as in your AuthContext with fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://lmsbackend-63yn.onrender.com/api';
+
+// Add debug logging to see what's loaded
+console.log("[DEBUG] Environment variables:", import.meta.env);
+console.log("[DEBUG] API_BASE_URL resolved to:", API_BASE_URL);
 
 export const login = async (credentials) => {
   try {

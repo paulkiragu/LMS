@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       
       const meUrl = API_BASE_URL 
         ? `${API_BASE_URL}/auth/me`
-        : "http://localhost:5001/api/auth/me"; 
+        : "http://localhost:8080/api/auth/me"; 
         
       axios.get(meUrl)
         .then((res) => {
