@@ -8,25 +8,21 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       console.log('Found existing token, verifying...');
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       
-      
-      const meUrl = import.meta.env.VITE_API_BASE_URL 
-        ? `${import.meta.env.VITE_API_BASE_URL}/auth/me`
-        : "http://localhost:1000/api/auth/me";
+      const meUrl = API_BASE_URL 
+        ? `${API_BASE_URL}/auth/me`
+        : "http://localhost:5001/api/auth/me"; 
         
       axios.get(meUrl)
         .then((res) => {
           console.log('Token verification successful:', res.data);
-          // Handle the response format from your backend
           const userData = res.data.user || res.data;
           setUser(userData);
         })
@@ -41,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       console.log('No token found');
       setLoading(false);
     }
-  }, []);
+  }, [API_BASE_URL]); 
 
   const loginUser = async (email, password) => {
     try {
@@ -49,18 +45,14 @@ export const AuthProvider = ({ children }) => {
       const data = await login({ email, password });
       console.log('AuthContext: Login response received:', data);
       
-      // Check if response has the expected structure
       if (!data.token) {
         throw new Error('No token received from server');
       }
       
-      
       let userData;
       if (data.user) {
-        // Standard format: { user: {...}, token: "..." }
         userData = data.user;
       } else if (data._id) {
-        // Your format: { _id, name, email, role, token }
         userData = {
           _id: data._id,
           name: data.name,
@@ -81,71 +73,70 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-const registerUser = async ({email, password, name, role}) => {
-  try {
-    console.log("[DEBUG] Attempting to register user:", { email, name, role });
+  const registerUser = async ({email, password, name, role}) => {
+    try {
+      console.log("[DEBUG] Attempting to register user:", { email, name, role });
+      console.log("[DEBUG] API_BASE_URL:", API_BASE_URL); // Debug log
 
-    if (!email || !password || !name || !role) {
-      throw new Error("Missing required registration fields");
+      if (!email || !password || !name || !role) {
+        throw new Error("Missing required registration fields");
+      }
+
+      // Fixed: Remove double response wrapping
+      const responseData = await register({ name, email, password, role });
+      console.log("[DEBUG] Registration response data:", responseData);
+
+      if (!responseData.token) {
+        throw new Error("Authentication token missing in response");
+      }
+
+      localStorage.setItem("token", responseData.token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${responseData.token}`;
+
+      // Handle both response formats
+      let userData;
+      if (responseData.user) {
+        userData = responseData.user;
+      } else if (responseData._id) {
+        userData = {
+          _id: responseData._id,
+          name: responseData.name,
+          email: responseData.email,
+          role: responseData.role
+        };
+      } else {
+        throw new Error("No user data received from server");
+      }
+
+      if (!userData._id || !userData.email) {
+        throw new Error("Incomplete user data received");
+      }
+
+      setUser(userData);
+      console.log("[SUCCESS] User registered successfully:", userData);
+
+      return userData;
+
+    } catch (error) {
+      console.error("[ERROR] Registration failed:", {
+        error: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        stack: error.stack
+      });
+
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common["Authorization"];
+      setUser(null);
+
+      throw new Error(
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed. Please try again."
+      );
     }
+  };
 
-    const response = await register({ name, email, password, role });
-    const responseData = response.data || response;
-
-    console.log("[DEBUG] Registration response data:", responseData);
-
-    if (!responseData.token) {
-      throw new Error("Authentication token missing in response");
-    }
-
-    localStorage.setItem("token", responseData.token);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${responseData.token}`;
-
-    // Handle both response formats like in login
-    let userData;
-    if (responseData.user) {
-      // Standard format: { user: {...}, token: "..." }
-      userData = responseData.user;
-    } else if (responseData._id) {
-      // Direct format: { _id, name, email, role, token }
-      userData = {
-        _id: responseData._id,
-        name: responseData.name,
-        email: responseData.email,
-        role: responseData.role
-      };
-    } else {
-      throw new Error("No user data received from server");
-    }
-
-    if (!userData._id || !userData.email) {
-      throw new Error("Incomplete user data received");
-    }
-
-    setUser(userData);
-    console.log("[SUCCESS] User registered successfully:", userData);
-
-    return userData;
-
-  } catch (error) {
-    console.error("[ERROR] Registration failed:", {
-      error: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      stack: error.stack
-    });
-
-    localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"];
-    setUser(null);
-
-    throw new Error(
-      error.response?.data?.message ||
-      error.message ||
-      "Registration failed. Please try again."
-    );
-  }
-};
   const logout = () => {
     console.log('Logging out user');
     localStorage.removeItem("token");
