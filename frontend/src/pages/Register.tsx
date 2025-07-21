@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GraduationCap, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -27,40 +28,68 @@ const Register: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
 
-    // Validation
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields');
-      return;
-    }
+  // Validation
+  if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    setError('Please fill in all fields');
+    return;
+  }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    setError('Passwords do not match');
+    return;
+  }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+  if (formData.password.length < 6) {
+    setError('Password must be at least 6 characters');
+    return;
+  }
 
-    try {
-// ✅ Correct - object parameter
-await registerUser({
-  email: formData.email,
-  password: formData.password,
-  name: formData.name,
-  role: formData.role
-});
-      navigate('/dashboard');
-    } catch (error) {
-      setError('Registration failed. Please try again.');
-    }
-  };
+  try {
+    const loadingToast = toast.loading('Creating your account...', {
+      position: 'top-center',
+      duration: 2000 // Show for minimum 3 seconds
+    });
 
+    // ✅ Correct - object parameter
+    await registerUser({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      role: formData.role
+    });
+
+    // Add artificial delay before redirect (2 seconds after registration completes)
+    setTimeout(() => {
+      toast.dismiss(loadingToast);
+      toast.success('Account created successfully! Redirecting...', {
+        position: 'top-center',
+        duration: 2000
+      });
+
+      // Redirect after another 2 seconds
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    }, 1000);
+
+  }  catch (error: any) {
+  // Dismiss loading toast on error
+  toast.dismiss();
+  
+  
+  const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
+  
+  setError(errorMessage);
+  toast.error(errorMessage, {
+    position: 'top-center',
+    duration: 4000
+  });
+}
+};
   return (
     <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
