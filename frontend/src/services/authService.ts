@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use the same API base URL as in your AuthContext
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:1000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
 
 export const login = async (credentials) => {
   try {
