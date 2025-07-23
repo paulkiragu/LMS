@@ -67,7 +67,6 @@ const Register: React.FC = () => {
       toast.dismiss(loadingToast);
       toast.success('Account created successfully! Redirecting...', {
         position: 'top-center',
-        duration: 2000
       });
 
       // Redirect after another 2 seconds
@@ -81,7 +80,7 @@ const Register: React.FC = () => {
   toast.dismiss();
   
   
-  const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
+  const errorMessage = error?.response?.data?.message || 'Registration failed. Account exists.';
   
   setError(errorMessage);
   toast.error(errorMessage, {
