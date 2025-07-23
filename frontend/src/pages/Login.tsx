@@ -49,8 +49,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       // Redirect after another 2 seconds
       setTimeout(() => {
         navigate(from, { replace: true });
-      }, 2000);
-    }, 2000);
+      });
+    });
 
   } catch (error) {
     toast.error(error.message || 'Invalid email or password', { 
