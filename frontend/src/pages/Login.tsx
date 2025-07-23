@@ -43,7 +43,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       toast.dismiss(loadingToast);
       toast.success('Login successful! Redirecting...', { 
         position: 'top-center',
-        duration: 2000
+        duration: 1000
       });
       
       // Redirect after another 2 seconds
