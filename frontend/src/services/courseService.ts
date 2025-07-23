@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:1000/api";
+const API = import.meta.env.VITE_API_BASE_URL;
 
 
 const api = axios.create({
@@ -17,33 +17,133 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const getEnrolledCourses = async () => {
-  const res = await api.get(`/course/enrolled`);
-  return res.data;
-}
 
+// Course Service Functions
+export const courseService = {
+  // Get all courses
+  getAllCourses: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
 
-export const getCourses = async () => {
-  const res = await axios.get(`${API}/course/me`);
-  return res.data;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching all courses:', error);
+      throw error;
+    }
+  },
+
+  // Get courses created by the logged-in user
+  getMyCourses: async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const allCourses = await response.json();
+      
+      // Filter courses by the logged-in user (instructor)
+      const userCourses = allCourses.filter(course => 
+        course.instructor._id === userId || course.instructor === userId
+      );
+      
+      return userCourses;
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+      throw error;
+    }
+  },
+
+  // Get single course by ID
+  getCourseById: async (courseId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course/${courseId}`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching course:', error);
+      throw error;
+    }
+  },
+
+  // Create new course
+  createCourse: async (courseData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(courseData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating course:', error);
+      throw error;
+    }
+  },
+
+  // Update course
+  updateCourse: async (courseId, courseData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course/${courseId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(courseData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating course:', error);
+      throw error;
+    }
+  },
+
+  // Delete course
+  deleteCourse: async (courseId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/course/${courseId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      throw error;
+    }
+  }
 };
 
-export const getCourseById = async (id: string) => {
-  const res = await axios.get(`${API}/course/${id}`);
-  return res.data;
-};
-
-export const createCourse = async (courseData: any) => {
-  const res = await axios.post(`${API}/course`, courseData);
-  return res.data;
-};
-
-export const updateCourse = async (id: string, courseData: any) => {
-  const res = await axios.put(`${API}/course/${id}`, courseData);
-  return res.data;
-};
-
-export const deleteCourse = async (id: string) => {
-  const res = await axios.delete(`${API}/course/${id}`);
-  return res.data;
-};
