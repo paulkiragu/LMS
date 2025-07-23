@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || https://lmsbackend-63yn.onrender.com/api;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -54,17 +54,39 @@ export const courseService = {
   // Get courses created by the logged-in user
   getMyCourses: async (userId) => {
     try {
+      console.log('🌐 Making API request to get all courses...');
+      console.log('🔑 User ID to filter by:', userId);
+      
       const response = await api.get('/course');
       const allCourses = response.data;
       
+      console.log('📥 Received all courses from API:', allCourses);
+      console.log('📊 Total courses count:', allCourses?.length || 0);
+      
       // Filter courses by the logged-in user (instructor)
-      const userCourses = allCourses.filter(course => 
-        course.instructor?._id === userId || course.instructor === userId
-      );
+      const userCourses = allCourses.filter(course => {
+        const instructorId = course.instructor?._id || course.instructor;
+        const isMatch = instructorId === userId;
+        
+        console.log('🔍 Checking course:', {
+          courseTitle: course.title,
+          courseInstructor: course.instructor,
+          instructorId: instructorId,
+          userId: userId,
+          isMatch: isMatch
+        });
+        
+        return isMatch;
+      });
+      
+      console.log('✅ Filtered user courses:', userCourses);
+      console.log('📈 User courses count:', userCourses.length);
       
       return userCourses;
     } catch (error) {
-      console.error('Error fetching user courses:', error);
+      console.error('❌ Error in getMyCourses:', error);
+      console.error('🔍 Error response:', error.response?.data);
+      console.error('🔍 Error status:', error.response?.status);
       throw new Error(error.response?.data?.message || 'Failed to fetch your courses');
     }
   },
