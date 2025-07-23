@@ -43,7 +43,7 @@ export const courseService = {
   // Get all courses
   getAllCourses: async () => {
     try {
-      const response = await api.get('/courses');
+      const response = await api.get('/course');
       return response.data;
     } catch (error) {
       console.error('Error fetching all courses:', error);
@@ -57,7 +57,7 @@ export const courseService = {
       console.log('🌐 Making API request to get all courses...');
       console.log('🔑 User ID to filter by:', userId);
       
-      const response = await api.get('/courses');
+      const response = await api.get('/course');
       const allCourses = response.data;
       
       console.log('📥 Received all courses from API:', allCourses);
@@ -94,7 +94,7 @@ export const courseService = {
   // Get single course by ID
   getCourseById: async (courseId) => {
     try {
-      const response = await api.get(`/courses/${courseId}`);
+      const response = await api.get(`/course/${courseId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching course:', error);
@@ -105,7 +105,7 @@ export const courseService = {
   // Create new course
   createCourse: async (courseData) => {
     try {
-      const response = await api.post('/courses', courseData);
+      const response = await api.post('/course', courseData);
       return response.data;
     } catch (error) {
       console.error('Error creating course:', error);
@@ -116,7 +116,7 @@ export const courseService = {
   // Update course
   updateCourse: async (courseId, courseData) => {
     try {
-      const response = await api.put(`/courses/${courseId}`, courseData);
+      const response = await api.put(`/course/${courseId}`, courseData);
       return response.data;
     } catch (error) {
       console.error('Error updating course:', error);
@@ -127,7 +127,7 @@ export const courseService = {
   // Delete course
   deleteCourse: async (courseId) => {
     try {
-      const response = await api.delete(`/courses/${courseId}`);
+      const response = await api.delete(`/course/${courseId}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting course:', error);
