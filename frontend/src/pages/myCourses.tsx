@@ -30,7 +30,10 @@ const MyCourses = ({ user, onNavigate }) => {
   // Fetch user's courses from API using centralized service
   useEffect(() => {
     const fetchMyCourses = async () => {
+      console.log('🔍 Fetching courses for user:', user);
+      
       if (!user?._id) {
+        console.log('❌ No user ID found');
         setError('User not authenticated');
         setLoading(false);
         return;
@@ -40,11 +43,15 @@ const MyCourses = ({ user, onNavigate }) => {
         setLoading(true);
         setError(null);
         
+        console.log('📡 Making API call to get courses for user ID:', user._id);
         const userCourses = await courseService.getMyCourses(user._id);
-        setCourses(userCourses);
+        console.log('✅ Received courses from API:', userCourses);
+        console.log('📊 Number of courses found:', userCourses?.length || 0);
+        
+        setCourses(userCourses || []);
       } catch (err) {
+        console.error('❌ Error fetching courses:', err);
         setError(err.message || 'Failed to fetch courses');
-        console.error('Error fetching courses:', err);
       } finally {
         setLoading(false);
       }
@@ -254,6 +261,15 @@ const MyCourses = ({ user, onNavigate }) => {
   const averageRating = courses.length > 0 
     ? (courses.reduce((acc, course) => acc + (course.rating || 0), 0) / courses.length).toFixed(1)
     : '0.0';
+
+  // Debug logging
+  console.log('🎯 Current state:', {
+    loading,
+    error,
+    coursesCount: courses.length,
+    courses: courses,
+    user: user
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
