@@ -46,7 +46,8 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/courses" element={<CourseList />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/dashboard/my-courses" component={MyCourses} />
+            <Route path="/dashboard/mycourses" element={<myCourses />} />
+            
             
             {/* Protected Routes */}
             <Route 
