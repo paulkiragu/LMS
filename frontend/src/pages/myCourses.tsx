@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 // Import your centralized course service
-import { courseService } from '../services/courseService'; // Adjust the path based on your file structure
+import { courseService } from '../services/courseService';
 
 const MyCourses = ({ user, onNavigate }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
