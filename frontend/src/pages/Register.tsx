@@ -73,8 +73,8 @@ const Register: React.FC = () => {
       // Redirect after another 2 seconds
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
-    }, 1000);
+      });
+    });
 
   }  catch (error: any) {
   // Dismiss loading toast on error
