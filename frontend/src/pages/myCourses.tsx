@@ -17,56 +17,8 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-// Course API Service
-const courseService = {
-  getMyCourses: async (userId) => {
-    try {
-      const response = await fetch('/api/course', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const allCourses = await response.json();
-      
-      // Filter courses by the logged-in user (instructor)
-      return allCourses.filter(course => 
-        course.instructor._id === userId || course.instructor === userId
-      );
-    } catch (error) {
-      console.error('Error fetching user courses:', error);
-      throw error;
-    }
-  },
-
-  deleteCourse: async (courseId) => {
-    try {
-      const response = await fetch(`/api/course/${courseId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error deleting course:', error);
-      throw error;
-    }
-  }
-};
+// Import your centralized course service
+import { courseService } from '../services/courseService'; // Adjust the path based on your file structure
 
 const MyCourses = ({ user, onNavigate }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -75,7 +27,7 @@ const MyCourses = ({ user, onNavigate }) => {
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(null);
 
-  // Fetch user's courses from API
+  // Fetch user's courses from API using centralized service
   useEffect(() => {
     const fetchMyCourses = async () => {
       if (!user?._id) {
@@ -101,7 +53,7 @@ const MyCourses = ({ user, onNavigate }) => {
     fetchMyCourses();
   }, [user]);
 
-  // Handle course deletion
+  // Handle course deletion using centralized service
   const handleDeleteCourse = async (courseId, courseTitle) => {
     const confirmMessage = `Are you sure you want to delete "${courseTitle}"? This action cannot be undone.`;
     
